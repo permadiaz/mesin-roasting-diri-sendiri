@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Mesin Roasting Diri Sendiri</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #fff3df;
+        --bg-dot: #f3d9ae;
+        --ink: #211309;
+        --ink-soft: #5c4630;
+        --card: #fffaf0;
+        --card-2: #ffe9c4;
+        --red: #f43a1e;
+        --red-dark: #c9260e;
+        --yellow: #ffb800;
+        --teal: #009e8c;
+        --line: #211309;
+        --shadow: 8px 8px 0 var(--line);
+        --shadow-sm: 4px 4px 0 var(--line);
+        --paper: #fffdf4;
+        --paper-ink: #241708;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #1c110a;
+          --bg-dot: #2e1e12;
+          --ink: #ffedd6;
+          --ink-soft: #c9a87e;
+          --card: #2a1a0f;
+          --card-2: #3a2412;
+          --red: #ff5a3c;
+          --red-dark: #ff5a3c;
+          --yellow: #ffb800;
+          --teal: #2fd3bd;
+          --line: #ffedd6;
+          --shadow: 8px 8px 0 rgba(0,0,0,.55);
+          --shadow-sm: 4px 4px 0 rgba(0,0,0,.55);
+        }
+      }
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        font-family: "Archivo", system-ui, sans-serif;
+        background: var(--bg);
+        background-image: radial-gradient(var(--bg-dot) 1.6px, transparent 1.6px);
+        background-size: 22px 22px;
+        color: var(--ink);
+        line-height: 1.5;
+      }
+      button, input, textarea { font: inherit; color: inherit; }
+      button { cursor: pointer; }
+      .wrap { max-width: 1080px; margin: 0 auto; padding: 20px 16px 56px; }
+
+      /* ---------- Hero ---------- */
+      .hero { padding: 18px 0 8px; position: relative; }
+      .sticker {
+        display: inline-block; background: var(--yellow); color: #241708;
+        border: 2.5px solid #241708; border-radius: 999px;
+        font-weight: 700; font-size: .82rem; letter-spacing: .04em;
+        padding: 6px 14px; transform: rotate(-2deg);
+        box-shadow: 3px 3px 0 #241708;
+      }
+      @media (prefers-color-scheme: dark) { .sticker { box-shadow: 3px 3px 0 rgba(0,0,0,.55); } }
+      h1 {
+        font-family: "Bricolage Grotesque", sans-serif;
+        font-weight: 800; line-height: .95; letter-spacing: -.01em;
+        font-size: clamp(2.6rem, 8.5vw, 5rem);
+        margin: 16px 0 10px; text-transform: uppercase;
+      }
+      h1 .outline {
+        color: transparent;
+        -webkit-text-stroke: 2.5px var(--ink);
+      }
+      h1 .red { color: var(--red); }
+      .hero p { font-size: clamp(1rem, 2.6vw, 1.2rem); color: var(--ink-soft); max-width: 560px; margin: 0; font-weight: 500; }
+      .hero p strong { color: var(--ink); }
+
+      /* ---------- Machine layout ---------- */
+      .machine {
+        margin-top: 28px; display: grid; gap: 22px;
+        grid-template-columns: 1fr;
+      }
+      @media (min-width: 880px) {
+        .machine { grid-template-columns: 1fr 1fr; align-items: start; }
+      }
+      .panel {
+        background: var(--card); border: 3px solid var(--line);
+        border-radius: 18px; box-shadow: var(--shadow); padding: 22px;
+      }
+      .panel h2 {
+        font-family: "Bricolage Grotesque", sans-serif; font-weight: 800;
+        font-size: 1.35rem; margin: 0 0 4px; text-transform: uppercase; letter-spacing: .01em;
+      }
+      .panel .sub { color: var(--ink-soft); font-size: .92rem; margin: 0 0 18px; font-weight: 500; }
+      .field-label {
+        display: block; font-weight: 700; font-size: .8rem; letter-spacing: .09em;
+        text-transform: uppercase; margin: 20px 0 8px;
+      }
+      .field-label:first-of-type { margin-top: 0; }
+      input[type="text"], textarea {
+        width: 100%; background: var(--bg); border: 2.5px solid var(--line);
+        border-radius: 12px; padding: 12px 14px; font-size: 1rem; font-weight: 600;
+        min-height: 48px;
+      }
+      textarea { min-height: 76px; resize: vertical; font-weight: 500; }
+      input[type="text"]:focus, textarea:focus { outline: 3px solid var(--yellow); outline-offset: 1px; }
+
+      .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+      .chip {
+        border: 2.5px solid var(--line); background: var(--card);
+        border-radius: 999px; padding: 9px 15px; font-weight: 700; font-size: .92rem;
+        min-height: 42px; transition: transform .08s ease, background .12s ease;
+      }
+      .chip:hover { transform: translateY(-1px); }
+      .chip.active { background: var(--ink); color: var(--bg); }
+      @media (prefers-color-scheme: dark) { .chip.active { background: var(--yellow); color: #241708; border-color: #241708; } }
+
+      .levels { display: grid; grid-template-columns: repeat(5, 1fr); gap: 7px; }
+      .level-btn {
+        border: 2.5px solid var(--line); background: var(--card);
+        border-radius: 12px; padding: 9px 4px 7px; text-align: center;
+        min-height: 62px; line-height: 1.15;
+      }
+      .level-btn .chilis { font-size: .95rem; letter-spacing: -2px; display: block; filter: grayscale(1) opacity(.35); }
+      .level-btn .lname { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; display: block; margin-top: 3px; }
+      .level-btn.active { background: var(--red); border-color: var(--line); color: #fff; }
+      .level-btn.active .chilis { filter: none; }
+      .level-desc { font-size: .88rem; color: var(--ink-soft); font-weight: 600; margin: 8px 0 0; min-height: 1.4em; }
+
+      .btn-roast {
+        margin-top: 24px; width: 100%;
+        background: var(--red); color: #fff;
+        border: 3px solid var(--line); border-radius: 14px;
+        font-family: "Bricolage Grotesque", sans-serif; font-weight: 800;
+        font-size: 1.3rem; text-transform: uppercase; letter-spacing: .02em;
+        padding: 16px 12px; min-height: 62px;
+        box-shadow: var(--shadow-sm);
+        transition: transform .08s ease, box-shadow .08s ease;
+      }
+      .btn-roast:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--line); }
+      .btn-roast:active { transform: translate(3px, 3px); box-shadow: 1px 1px 0 var(--line); }
+      .btn-roast:disabled { opacity: .65; cursor: wait; transform: none; }
+      .btn-ghost {
+        width: 100%; margin-top: 10px; background: transparent;
+        border: 2.5px dashed var(--ink-soft); color: var(--ink-soft);
+        border-radius: 12px; padding: 11px; font-weight: 700; min-height: 46px;
+      }
+      .btn-ghost:hover { border-color: var(--ink); color: var(--ink); }
+
+      /* ---------- Receipt / output ---------- */
+      .receipt-zone { position: relative; }
+      .receipt {
+        background: var(--paper); color: var(--paper-ink);
+        font-family: "IBM Plex Mono", monospace;
+        padding: 26px 24px 34px; position: relative;
+        box-shadow: 0 14px 34px rgba(30, 15, 0, .28);
+        transform: rotate(.6deg);
+      }
+      .receipt::after {
+        content: ""; position: absolute; left: 0; right: 0; bottom: -11px; height: 12px;
+        background:
+          linear-gradient(-45deg, transparent 8px, var(--paper) 0) 0 0/16px 16px repeat-x,
+          linear-gradient(45deg, transparent 8px, var(--paper) 0) 8px 0/16px 16px repeat-x;
+        transform: rotate(180deg);
+      }
+      .receipt .r-head { text-align: center; border-bottom: 2px dashed #b8a888; padding-bottom: 12px; }
+      .receipt .r-head .shop { font-weight: 600; letter-spacing: .22em; font-size: .8rem; }
+      .receipt .r-head .addr { font-size: .72rem; color: #7a6748; margin-top: 2px; }
+      .receipt .r-meta { display: flex; justify-content: space-between; font-size: .74rem; color: #7a6748; padding: 10px 0 0; flex-wrap: wrap; gap: 4px; }
+      .roast-text {
+        font-family: "Bricolage Grotesque", sans-serif; font-weight: 700;
+        font-size: clamp(1.3rem, 3.4vw, 1.65rem); line-height: 1.3;
+        margin: 18px 0 6px; min-height: 3.4em;
+      }
+      .roast-text.idle { color: #8d795c; font-weight: 500; font-family: "IBM Plex Mono", monospace; font-size: 1rem; }
+      .bumbu { font-size: .95rem; color: #a03c14; font-weight: 600; margin: 4px 0 0; }
+      .meter-row { margin-top: 18px; }
+      .meter-row .m-label { display: flex; justify-content: space-between; font-size: .74rem; letter-spacing: .08em; font-weight: 600; }
+      .meter { height: 14px; border: 2px solid var(--paper-ink); border-radius: 999px; overflow: hidden; margin-top: 5px; background: #f1e7cf; }
+      .meter-fill { height: 100%; width: 0%; background: repeating-linear-gradient(45deg, var(--red) 0 10px, #ff7a1a 10px 20px); transition: width .7s cubic-bezier(.2,.9,.3,1.2); }
+      .penawar { border-top: 2px dashed #b8a888; margin-top: 18px; padding-top: 14px; font-size: .9rem; }
+      .penawar .p-label { font-size: .7rem; letter-spacing: .18em; font-weight: 600; color: var(--teal); }
+      .penawar p { margin: 5px 0 0; }
+      .receipt .r-foot { text-align: center; font-size: .72rem; color: #7a6748; margin-top: 16px; }
+      .receipt-actions { display: flex; gap: 9px; margin-top: 26px; flex-wrap: wrap; }
+      .btn-small {
+        flex: 1 1 auto; border: 2.5px solid var(--line); border-radius: 11px;
+        background: var(--card); font-weight: 700; padding: 11px 10px; min-height: 46px;
+        box-shadow: 3px 3px 0 var(--line); font-size: .92rem;
+        transition: transform .08s ease, box-shadow .08s ease;
+      }
+      .btn-small:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--line); }
+      .btn-small.hot { background: var(--yellow); color: #241708; }
+      .btn-small:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+
+      .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 22px; }
+      .stat {
+        background: var(--card-2); border: 2.5px solid var(--line); border-radius: 14px;
+        padding: 12px 8px; text-align: center;
+      }
+      .stat .num { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 1.5rem; line-height: 1; }
+      .stat .lbl { font-size: .68rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-soft); margin-top: 5px; }
+
+      /* ---------- Curhat ---------- */
+      .curhat { margin-top: 22px; }
+      .curhat .btn-roast { margin-top: 14px; background: var(--teal); font-size: 1.05rem; min-height: 54px; }
+
+      /* ---------- History ---------- */
+      .history { margin-top: 34px; }
+      .history h2 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; text-transform: uppercase; font-size: 1.3rem; margin: 0 0 4px; }
+      .history .sub { color: var(--ink-soft); font-weight: 500; margin: 0 0 14px; font-size: .92rem; }
+      .hist-empty { border: 2.5px dashed var(--ink-soft); border-radius: 14px; padding: 18px; text-align: center; color: var(--ink-soft); font-weight: 600; }
+      .hist-item {
+        background: var(--card); border: 2.5px solid var(--line); border-radius: 14px;
+        padding: 14px 16px; margin-bottom: 10px; box-shadow: var(--shadow-sm);
+      }
+      .hist-item .h-meta { font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--red); margin-bottom: 4px; }
+      .hist-item p { margin: 0; font-weight: 600; }
+
+      footer { margin-top: 40px; text-align: center; color: var(--ink-soft); font-size: .85rem; font-weight: 500; }
+      footer .big { font-size: 1rem; color: var(--ink); font-weight: 700; }
+
+      .toast {
+        position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 90px);
+        background: var(--ink); color: var(--bg); font-weight: 700;
+        padding: 12px 20px; border-radius: 999px; font-size: .92rem;
+        transition: transform .3s cubic-bezier(.2,.9,.3,1.3); z-index: 50;
+        box-shadow: 0 10px 24px rgba(0,0,0,.3); max-width: 92vw; text-align: center;
+      }
+      .toast.show { transform: translate(-50%, 0); }
+
+      @keyframes shake {
+        0%,100% { transform: translateX(0) rotate(0); }
+        15% { transform: translateX(-7px) rotate(-.5deg); }
+        30% { transform: translateX(6px) rotate(.5deg); }
+        45% { transform: translateX(-5px); }
+        60% { transform: translateX(5px); }
+        75% { transform: translateX(-3px); }
+      }
+      .shaking { animation: shake .5s ease; }
+      @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: .15; } }
+      .thinking-dots span { animation: blink 1s infinite; display: inline-block; }
+      .thinking-dots span:nth-child(2) { animation-delay: .18s; }
+      .thinking-dots span:nth-child(3) { animation-delay: .36s; }
+      @media (prefers-reduced-motion: reduce) {
+        .shaking, .thinking-dots span { animation: none; }
+        .meter-fill { transition: none; }
+        * { scroll-behavior: auto; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+
+      <header class="hero">
+        <span class="sticker">100% sukarela &middot; 0% bisa protes</span>
+        <h1>Mesin <span class="outline">Roasting</span><br />Diri <span class="red">Sendiri</span></h1>
+        <p>Lo yang minta di-roast, lo yang pencet tombolnya, <strong>lo juga yang nggak boleh baper.</strong> Pilih bahannya, atur level pedasnya, terima nasib.</p>
+      </header>
+
+      <main class="machine" id="machine">
+        <!-- ===== Controls ===== -->
+        <section class="panel" aria-label="Pengaturan roasting">
+          <h2>Atur Dulu</h2>
+          <p class="sub">Semakin spesifik bahannya, semakin nampol hasilnya.</p>
+
+          <label class="field-label" for="nama">Nama panggilan lo</label>
+          <input type="text" id="nama" value="Dias" maxlength="24" autocomplete="off" />
+
+          <span class="field-label" id="lbl-bahan">Bahan roasting</span>
+          <div class="chips" role="group" aria-labelledby="lbl-bahan" id="chips">
+            <button type="button" class="chip active" data-cat="sales">Kerjaan Sales</button>
+            <button type="button" class="chip" data-cat="rebahan">Rebahan &amp; Mager</button>
+            <button type="button" class="chip" data-cat="dompet">Dompet &amp; Belanja</button>
+            <button type="button" class="chip" data-cat="begadang">Begadang &amp; Scroll HP</button>
+            <button type="button" class="chip" data-cat="wacana">Wacana Doang</button>
+            <button type="button" class="chip" data-cat="overthinking">Overthinking</button>
+            <button type="button" class="chip" data-cat="random">Campur Aduk (Acak)</button>
+          </div>
+
+          <span class="field-label" id="lbl-level">Level kepedasan</span>
+          <div class="levels" role="group" aria-labelledby="lbl-level" id="levels">
+            <button type="button" class="level-btn" data-level="1"><span class="chilis">🌶️</span><span class="lname">Cubit</span></button>
+            <button type="button" class="level-btn" data-level="2"><span class="chilis">🌶️🌶️</span><span class="lname">Nyindir</span></button>
+            <button type="button" class="level-btn active" data-level="3"><span class="chilis">🌶️🌶️🌶️</span><span class="lname">Nampol</span></button>
+            <button type="button" class="level-btn" data-level="4"><span class="chilis">🌶️🌶️🌶️🌶️</span><span class="lname">Kebakar</span></button>
+            <button type="button" class="level-btn" data-level="5"><span class="chilis">🌶️🌶️🌶️🌶️🌶️</span><span class="lname">Ampun</span></button>
+          </div>
+          <p class="level-desc" id="levelDesc"></p>
+
+          <button type="button" class="btn-roast" id="btnRoast">🔥 Roast Gue Sekarang</button>
+        </section>
+
+        <!-- ===== Output ===== -->
+        <section class="receipt-zone" aria-label="Hasil roasting">
+          <div class="receipt" id="receipt">
+            <div class="r-head">
+              <div class="shop">*** STRUK ROASTING ***</div>
+              <div class="addr">Jl. Kena Mental No. 1 &middot; Buka 24 Jam &middot; Tanpa Ampun</div>
+            </div>
+            <div class="r-meta">
+              <span id="rNo">No. Antrian: —</span>
+              <span id="rCat">Bahan: —</span>
+              <span id="rLvl">Level: —</span>
+            </div>
+            <p class="roast-text idle" id="roastText">Mesinnya lagi pemanasan. Pencet tombol merah di sebelah, jangan cuma diliatin doang — itu kebiasaan lo banget soalnya.</p>
+            <p class="bumbu" id="bumbuText" hidden></p>
+            <div class="meter-row">
+              <div class="m-label"><span>SKOR KENA MENTAL</span><span id="skorNum">0/100</span></div>
+              <div class="meter"><div class="meter-fill" id="meterFill"></div></div>
+            </div>
+            <div class="penawar" id="penawarBox" hidden>
+              <span class="p-label">OBAT PENAWAR (BIAR NGGAK BAPER)</span>
+              <p id="penawarText"></p>
+            </div>
+            <div class="r-foot">— Terima kasih sudah di-roast. Tidak menerima komplain, refund, maupun klarifikasi. —</div>
+          </div>
+
+          <div class="receipt-actions">
+            <button type="button" class="btn-small" id="btnAgain" disabled>🎲 Roast Lagi</button>
+            <button type="button" class="btn-small hot" id="btnSpicier" disabled>🌶️ Kurang Pedas, Naikin!</button>
+            <button type="button" class="btn-small" id="btnCopy" disabled>📋 Salin Roast</button>
+          </div>
+
+          <div class="stats">
+            <div class="stat"><div class="num" id="statTotal">0</div><div class="lbl">Kali di-roast sesi ini</div></div>
+            <div class="stat"><div class="num" id="statRekor">0</div><div class="lbl">Rekor kena mental</div></div>
+            <div class="stat"><div class="num" id="statStreak">0</div><div class="lbl">Roast beruntun</div></div>
+          </div>
+        </section>
+      </main>
+
+      <!-- ===== Curhat mode ===== -->
+      <section class="panel curhat" aria-label="Roast dari curhat">
+        <h2>Mode Curhat</h2>
+        <p class="sub">Tulis aib atau kebiasaan lo sendiri di sini. Mesin yang ubah jadi roasting. Lo yang ngaku, lo yang kena.</p>
+        <label class="field-label" for="curhatInput">Pengakuan dosa lo</label>
+        <textarea id="curhatInput" maxlength="220" placeholder="Contoh: gue selalu bilang diet mulai besok, tapi tiap malam tetap checkout martabak…"></textarea>
+        <button type="button" class="btn-roast" id="btnCurhat">Roast Dari Curhat Gue</button>
+      </section>
+
+      <!-- ===== History ===== -->
+      <section class="history" aria-label="Riwayat roasting">
+        <h2>Album Kena Mental</h2>
+        <p class="sub">Roast-roast yang udah lo terima sesi ini. Buat kenang-kenangan, atau buat dibaca ulang pas lagi sok kuat.</p>
+        <div id="histList">
+          <div class="hist-empty">Masih kosong. Berani pencet tombolnya dulu, baru albumnya keisi.</div>
+        </div>
+      </section>
+
+      <footer>
+        <p class="big">Ingat: yang nge-roast lo di sini itu… lo sendiri.</p>
+        <p>Mesin ini cuma nyediain tombolnya. Semua keputusan buruk tetap 100% karya lo.</p>
+      </footer>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var LEVEL_INFO = {
+          1: { name: "Cubit Sayang", desc: "Level 1 — Cubit Sayang. Masih sopan, kayak ditegur ibu kos." },
+          2: { name: "Nyindir Halus", desc: "Level 2 — Nyindir Halus. Senyum-senyum, tapi nusuk pelan." },
+          3: { name: "Pedas Nampol", desc: "Level 3 — Pedas Nampol. Standar tongkrongan. Aman buat mental rata-rata." },
+          4: { name: "Kebakar", desc: "Level 4 — Kebakar. Mulai panas. Siapin air minum dan harga diri cadangan." },
+          5: { name: "AMPUN BANG", desc: "Level 5 — AMPUN BANG. Tidak ada rem. Lo yang milih, jangan salahin mesin." }
+        };
+
+        var ROASTS = {
+          sales: [
+            "{nama} bilang dirinya sales hunter. Yang paling sering di-hunting? Sinyal. Prospek nge-ghosting, lo yang haunted.",
+            "Follow up lo rajin banget, {nama}. Sayangnya yang rajin bales cuma centang dua sama tulisan 'terakhir dilihat kemarin'.",
+            "Pipeline lo penuh, {nama}. Penuh harapan. Isinya: 'nanti ya Pak', 'lagi dibahas internal', sama 'budget-nya belum turun'.",
+            "Lo jago banget buka obrolan sama prospek. Yang belum jago: bikin prospeknya buka email lo.",
+            "Target lo tinggi, {nama}. Yang lebih tinggi lagi cuma tumpukan draft follow up yang nggak pernah lo kirim.",
+            "Lo bilang prospeknya 'lagi mikir'. {nama}, dia bukan mikir. Dia udah pindah vendor dari minggu lalu.",
+            "Presentasi lo meyakinkan banget, {nama}. Meyakinkan prospek buat bilang 'boleh dikirim proposalnya aja dulu ya'.",
+            "Lo hafal semua pain point customer. Kecuali satu: kenapa mereka nggak jadi beli dari lo.",
+            "Closing itu seni, kata lo. Berarti selama ini lo lagi masa orientasi seni rupa, {nama}.",
+            "Lo rajin networking, {nama}. Kartu nama lo yang jalan-jalan, deal-nya yang diem di tempat."
+          ],
+          rebahan: [
+            "Produktivitas lo hari ini, {nama}: mindahin posisi rebahan dari miring kiri ke miring kanan. Itu pun pake jeda ngemil.",
+            "Lo bilang lagi 'recharge energi'. {nama}, lo udah nge-charge dari 2023. Baterainya bocor apa gimana?",
+            "Kasur lo tuh bukan tempat istirahat lagi, {nama}. Udah jadi kantor cabang tetap.",
+            "Lo punya banyak rencana pas lagi rebahan. Begitu berdiri, rencananya ikut rebahan juga.",
+            "Olahraga favorit lo, {nama}: scroll sambil tiduran. Satu-satunya yang gerak cuma jempol. Itu pun kadang kram.",
+            "Lo bilang 'lima menit lagi' dari jam sembilan pagi, {nama}. Sekarang mataharinya udah ganti shift.",
+            "Motivasi lo tinggi banget, {nama}. Tingginya sebatas niat sebelum badan lo bilang 'nggak dulu deh'.",
+            "Lo bukan pemalas, {nama}. Lo cuma lagi riset mendalam tentang gravitasi. Udah bertahun-tahun risetnya belum kelar."
+          ],
+          dompet: [
+            "Gaji lo numpang lewat doang, {nama}. Datang tanggal muda, pamit tanggal belasan. Kayak tamu nggak diundang pulang.",
+            "Lo jago banget bilang 'ini investasi'. {nama}, semua barang di keranjang lo lo sebut investasi. Termasuk yang diskonnya cuma dua ribu.",
+            "Prinsip lo: nabung itu penting. Praktik lo: checkout itu lebih penting. Prinsipnya kalah 0-12, {nama}.",
+            "Dompet lo diet ketat, {nama}. Yang nggak diet itu jempol lo pas lihat flash sale.",
+            "Lo selalu nunggu gajian buat mulai hidup hemat. Terus gajian datang, lo ngerayainnya pake… belanja. Lingkaran setan versi e-commerce.",
+            "Catatan keuangan lo rapi banget, {nama}. Rapi mencatat semua pengeluaran yang sebenernya nggak perlu dicatat kalau nggak lo lakuin.",
+            "'Terakhir nih, janji.' — kalimat yang udah lo ucapin 14 kali bulan ini, {nama}. Penjualnya aja sampai hafal.",
+            "Lo bilang kopi mahal itu pemborosan. Terus lo beli kopi mahal sambil bilang gitu. Konsistennya di omongan doang, {nama}."
+          ],
+          begadang: [
+            "Jam tidur lo, {nama}, ngikutin zona waktu negara lain. Badan di Jakarta, jadwal tidur di London.",
+            "'Satu video lagi' kata lo jam sebelas malam. Sekarang jam tiga pagi dan lo udah jadi ahli sejarah Mesir kuno dari video acak.",
+            "Lo bukan kurang tidur, {nama}. Lo kelebihan scroll. Mata panda lo itu bukan kurang istirahat, itu sertifikat keanggotaan begadang.",
+            "Besok lo bilang mau tidur cepat. Besoknya lo bilang hal yang sama. {nama}, itu bukan rencana, itu tradisi.",
+            "Notifikasi terakhir lo sebelum tidur: 'waktu layar Anda minggu ini naik 34%'. HP lo aja sampai ngasih rapor, {nama}.",
+            "Lo ngantuk parah pas kerja, tapi jam satu pagi mendadak segar kayak habis minum tiga gelas kopi. Jam biologis lo error, {nama}.",
+            "Tidur jam dua, bangun jam tujuh, terus heran kenapa hidup kerasa berat. {nama}, yang berat itu bukan hidup. Itu mata lo.",
+            "Lo udah nonton semua video 'cara tidur cepat' di internet, {nama}. Nontonnya sambil begadang, tentu saja."
+          ],
+          wacana: [
+            "'Mulai Senin gue berubah.' — {nama}, kalimat ini udah lo ulang lebih sering dari lo beneran berubah.",
+            "Rencana lo detail banget, {nama}. Ada timeline, ada target, ada spreadsheet. Yang nggak ada cuma eksekusinya.",
+            "Lo punya 27 tab terbuka tentang 'cara mulai'. {nama}, cara mulainya itu bukan nambah tab ke-28.",
+            "Gym lo udah dibayar, {nama}. Yang rajin datang ke sana cuma notif tagihannya.",
+            "Diet lo selalu mulai besok. Besoknya, besok lagi. {nama}, 'besok' lo itu udah kayak tanggal merah, selalu digeser.",
+            "Lo beli buku tentang produktivitas, {nama}. Udah tiga bulan. Masih di plastik. Bukunya nunggu lo produktif buat dibaca.",
+            "To-do list lo panjang banget, {nama}. Isinya mayoritas to-do list kemarin yang lo salin ulang biar kelihatan baru.",
+            "Lo nunggu 'mood yang pas' buat mulai. {nama}, mood lo itu kayak wifi tetangga: kadang muncul, nggak pernah bisa diandelin."
+          ],
+          overthinking: [
+            "Otak lo, {nama}, bisa bikin skenario 40 cabang dari satu chat yang cuma dibalas 'ok'.",
+            "Lo replay obrolan tiga hari lalu sambil mandi, {nama}, nyiapin jawaban buat argumen yang udah selesai dan nggak ada yang inget.",
+            "Orang lain tidur buat istirahat. Lo tidur buat mikirin kenapa lo nggak bisa tidur. Efisien banget, {nama}.",
+            "'Dia online tapi nggak bales.' {nama}, lo langsung bikin teori konspirasi level dokumenter. Padahal dia lagi di toilet.",
+            "Lo overthinking soal masa depan, masa lalu, sama masa sekarang sekaligus. {nama}, otak lo kerja lembur tanpa dibayar.",
+            "Keputusan sekecil milih menu aja lo riset 20 menit, {nama}. Akhirnya pesan yang biasa juga.",
+            "Lo minta pendapat semua orang biar yakin, {nama}. Ujungnya lo tetap milih yang pertama dan tetap nggak yakin juga.",
+            "Pikiran lo jam dua pagi itu bukan refleksi, {nama}. Itu rapat darurat yang pesertanya cuma lo, agendanya cuma nyesel."
+          ]
+        };
+
+        var BUMBU = [
+          "Udah, jangan nangis. Lo yang pencet tombolnya.",
+          "Sakit ya? Itu tandanya mesinnya kerja bener.",
+          "Kalau kena, itu bukan fitnah. Itu observasi.",
+          "Tenang, nggak ada yang tau. Kecuali lo sendiri. Dan lo tau itu bener.",
+          "Mau protes? Protesnya ke cermin, pelakunya di sana.",
+          "Ini belum yang paling pedas. Berani lanjut?",
+          "Tuh kan, ketawa sambil kena. Kombinasi langka."
+        ];
+
+        var PENAWAR = [
+          "Tapi serius: lo masih mau pencet tombol ini dan ketawa, berarti mental lo jauh lebih kuat dari yang lo kira.",
+          "Penawar beneran: satu hal kecil yang lo janjiin ke diri sendiri hari ini, lakuin beneran. Satu aja, nggak usah lima.",
+          "Ingat, yang di-roast itu kebiasaannya, bukan orangnya. Kebiasaan bisa diganti. Pelan-pelan aja.",
+          "Lo udah sejauh ini di hidup lo dengan segala kekacauan itu. Berarti sebenernya lo lumayan tangguh.",
+          "Roast-nya selesai. Sekarang minum air putih dulu, itu satu-satunya saran serius di halaman ini.",
+          "Besok lo tetap bisa mulai lagi. Kali ini beneran mulai, bukan mulai 'mulai'."
+        ];
+
+        var LOADING = [
+          "Lagi ngumpulin aib lo",
+          "Lagi nanya ke tongkrongan",
+          "Lagi ngintip riwayat kebiasaan lo",
+          "Lagi ngasah kata-kata",
+          "Lagi konsultasi sama cermin",
+          "Lagi milih yang paling kena"
+        ];
+
+        var CURHAT_RULES = [
+          { keys: ["diet", "makan", "martabak", "ngemil", "berat badan", "kurus"], roast: "Lo ngaku sendiri soal makan ini, {nama}. Diet lo itu bukan gagal — diet lo bahkan belum pernah resmi dimulai. Yang resmi cuma checkout-nya." },
+          { keys: ["tidur", "begadang", "ngantuk", "insomnia", "jam 2", "jam 3"], roast: "Ngaku begadang, {nama}? Jam tidur lo itu bukan jadwal, itu saran. Dan lo nggak pernah nurut sama saran itu." },
+          { keys: ["duit", "belanja", "checkout", "gaji", "boros", "shopee", "tokopedia", "flash sale"], roast: "Lo ngaku sendiri soal duit, {nama}. Dompet lo itu bukan bocor, emang lo yang buka kerannya tiap ada diskon." },
+          { keys: ["hp", "scroll", "tiktok", "reels", "instagram", "youtube", "layar"], roast: "Ngaku doyan scroll, {nama}? Jempol lo lebih terlatih dari seluruh badan lo digabung. Itu bukan hobi, itu pekerjaan sampingan tanpa gaji." },
+          { keys: ["gym", "olahraga", "lari", "push up", "fitness", "jogging"], roast: "Soal olahraga ini, {nama}: niat lo udah level atlet. Eksekusinya level penonton atlet. Dari kasur." },
+          { keys: ["kerja", "deadline", "lembur", "bos", "kantor", "meeting", "prospek", "follow up"], roast: "Curhat kerjaan, {nama}? Deadline lo itu kayak mantan: makin dideketin makin bikin deg-degan, dan selalu datang pas lo lagi santai." },
+          { keys: ["rebahan", "mager", "malas", "kasur", "tiduran"], roast: "Lo ngaku mager, {nama}. Itu bukan pengakuan lagi, itu curriculum vitae. Kasur lo sampai bisa jadi referensi kerja." },
+          { keys: ["jomblo", "pacar", "gebetan", "chat", "dibales", "ghosting", "mantan"], roast: "Soal percintaan ini, {nama}: lo bukan kurang beruntung. Lo cuma terlalu sering ngejar yang sinyalnya udah jelas merah, terus heran kenapa macet." },
+          { keys: ["game", "rank", "mobile legend", "ml", "valorant", "push rank"], roast: "Ngaku soal game, {nama}? Rank lo naik turun kayak harga cabai, tapi jam mainnya stabil kayak pegawai negeri. Konsistensi lo ada, cuma salah tempat." },
+          { keys: ["kopi", "ngopi", "kafein"], roast: "Soal kopi, {nama}: lo nggak minum kopi buat melek. Lo minum kopi buat punya alasan kenapa lo nggak bisa tidur. Lingkaran yang lo seduh sendiri." },
+          { keys: ["nunda", "nanti", "besok", "deadline", "prokrastinasi"], roast: "Ngaku suka nunda, {nama}? 'Nanti' versi lo itu bukan waktu. Itu tempat pembuangan tugas yang nggak pernah dijemput." }
+        ];
+
+        var state = {
+          cat: "sales",
+          level: 3,
+          total: 0,
+          rekor: 0,
+          streak: 0,
+          antrian: 0,
+          lastIdx: {},
+          busy: false,
+          lastRoast: ""
+        };
+
+        var $ = function (id) { return document.getElementById(id); };
+        var chipsEl = $("chips"), levelsEl = $("levels");
+        var roastText = $("roastText"), bumbuText = $("bumbuText");
+        var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        function toast(msg) {
+          var t = $("toast");
+          t.textContent = msg;
+          t.classList.add("show");
+          clearTimeout(t._h);
+          t._h = setTimeout(function () { t.classList.remove("show"); }, 2400);
+        }
+
+        function nama() {
+          var v = $("nama").value.trim();
+          return v ? v : "Lo";
+        }
+
+        function pickCat() {
+          if (state.cat !== "random") return state.cat;
+          var keys = Object.keys(ROASTS);
+          return keys[Math.floor(Math.random() * keys.length)];
+        }
+
+        function catLabel(key) {
+          var map = { sales: "Kerjaan Sales", rebahan: "Rebahan & Mager", dompet: "Dompet & Belanja", begadang: "Begadang & Scroll HP", wacana: "Wacana Doang", overthinking: "Overthinking" };
+          return map[key] || key;
+        }
+
+        function pickRoast(key) {
+          var arr = ROASTS[key];
+          var idx;
+          do { idx = Math.floor(Math.random() * arr.length); } while (arr.length > 1 && state.lastIdx[key] === idx);
+          state.lastIdx[key] = idx;
+          return arr[idx];
+        }
+
+        function skorFor(level) {
+          var base = level * 17 + Math.floor(Math.random() * 14);
+          return Math.min(100, base);
+        }
+
+        function updateLevelDesc() {
+          $("levelDesc").textContent = LEVEL_INFO[state.level].desc;
+        }
+
+        function renderResult(roast, catKey, fromCurhat) {
+          state.antrian += 1;
+          state.total += 1;
+          state.streak += 1;
+          var skor = skorFor(state.level);
+          if (skor > state.rekor) state.rekor = skor;
+
+          var text = roast.split("{nama}").join(nama());
+          state.lastRoast = text;
+          roastText.textContent = text;
+          roastText.classList.remove("idle");
+
+          if (state.level >= 4) {
+            bumbuText.textContent = "🌶️ " + BUMBU[Math.floor(Math.random() * BUMBU.length)];
+            bumbuText.hidden = false;
+          } else {
+            bumbuText.hidden = true;
+          }
+
+          $("rNo").textContent = "No. Antrian: #" + String(state.antrian).padStart(3, "0");
+          $("rCat").textContent = "Bahan: " + (fromCurhat ? "Curhat Sendiri" : catLabel(catKey));
+          $("rLvl").textContent = "Level: " + state.level + " (" + LEVEL_INFO[state.level].name + ")";
+          $("skorNum").textContent = skor + "/100";
+          $("meterFill").style.width = skor + "%";
+
+          $("penawarText").textContent = PENAWAR[Math.floor(Math.random() * PENAWAR.length)];
+          $("penawarBox").hidden = false;
+
+          $("btnAgain").disabled = false;
+          $("btnCopy").disabled = false;
+          $("btnSpicier").disabled = state.level >= 5;
+
+          $("statTotal").textContent = state.total;
+          $("statRekor").textContent = state.rekor;
+          $("statStreak").textContent = state.streak;
+
+          addHistory(text, fromCurhat ? "Curhat Sendiri" : catLabel(catKey), skor);
+        }
+
+        function addHistory(text, label, skor) {
+          var list = $("histList");
+          var empty = list.querySelector(".hist-empty");
+          if (empty) empty.remove();
+          var item = document.createElement("div");
+          item.className = "hist-item";
+          var meta = document.createElement("div");
+          meta.className = "h-meta";
+          meta.textContent = label + " · Level " + state.level + " · Skor " + skor;
+          var p = document.createElement("p");
+          p.textContent = text;
+          item.appendChild(meta);
+          item.appendChild(p);
+          list.insertBefore(item, list.firstChild);
+          while (list.children.length > 8) list.removeChild(list.lastChild);
+        }
+
+        function runRoast(customText) {
+          if (state.busy) return;
+          state.busy = true;
+          var btn = $("btnRoast");
+          btn.disabled = true;
+          $("btnCurhat").disabled = true;
+
+          var panel = $("machine");
+          if (!reduceMotion) {
+            panel.classList.remove("shaking");
+            void panel.offsetWidth;
+            panel.classList.add("shaking");
+          }
+
+          var loadWord = LOADING[Math.floor(Math.random() * LOADING.length)];
+          roastText.innerHTML = "";
+          roastText.classList.add("idle");
+          var span = document.createElement("span");
+          span.textContent = loadWord;
+          var dots = document.createElement("span");
+          dots.className = "thinking-dots";
+          dots.innerHTML = "<span>.</span><span>.</span><span>.</span>";
+          roastText.appendChild(span);
+          roastText.appendChild(dots);
+          bumbuText.hidden = true;
+
+          var delay = reduceMotion ? 60 : 850;
+          setTimeout(function () {
+            var catKey = pickCat();
+            var roast = customText || pickRoast(catKey);
+            renderResult(roast, catKey, !!customText);
+            btn.disabled = false;
+            $("btnCurhat").disabled = false;
+            state.busy = false;
+            if (!reduceMotion) {
+              $("receipt").scrollIntoView({ behavior: "smooth", block: "nearest" });
+            }
+          }, delay);
+        }
+
+        chipsEl.addEventListener("click", function (e) {
+          var b = e.target.closest(".chip");
+          if (!b) return;
+          chipsEl.querySelectorAll(".chip").forEach(function (c) { c.classList.remove("active"); });
+          b.classList.add("active");
+          state.cat = b.getAttribute("data-cat");
+          state.streak = 0;
+          $("statStreak").textContent = 0;
+        });
+
+        levelsEl.addEventListener("click", function (e) {
+          var b = e.target.closest(".level-btn");
+          if (!b) return;
+          levelsEl.querySelectorAll(".level-btn").forEach(function (c) { c.classList.remove("active"); });
+          b.classList.add("active");
+          state.level = parseInt(b.getAttribute("data-level"), 10);
+          updateLevelDesc();
+        });
+
+        $("btnRoast").addEventListener("click", function () { runRoast(null); });
+        $("btnAgain").addEventListener("click", function () { runRoast(null); });
+
+        $("btnSpicier").addEventListener("click", function () {
+          if (state.level >= 5) return;
+          state.level += 1;
+          levelsEl.querySelectorAll(".level-btn").forEach(function (c) {
+            c.classList.toggle("active", parseInt(c.getAttribute("data-level"), 10) === state.level);
+          });
+          updateLevelDesc();
+          toast("Level naik ke " + state.level + " — " + LEVEL_INFO[state.level].name + ". Berani-beraninya lo.");
+          runRoast(null);
+        });
+
+        $("btnCopy").addEventListener("click", function () {
+          if (!state.lastRoast) return;
+          var full = state.lastRoast + " — di-roast oleh Mesin Roasting Diri Sendiri (level " + state.level + ", skor kena mental " + $("skorNum").textContent + ")";
+          function done() { toast("Ke-salin! Tinggal tempel dan pamerkan kena mental lo."); }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(full).then(done, function () { fallback(); });
+          } else { fallback(); }
+          function fallback() {
+            var ta = document.createElement("textarea");
+            ta.value = full;
+            ta.style.position = "fixed"; ta.style.opacity = "0";
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand("copy"); done(); } catch (err) { toast("Gagal nyalin. Screenshot aja struknya, lebih dramatis."); }
+            document.body.removeChild(ta);
+          }
+        });
+
+        $("btnCurhat").addEventListener("click", function () {
+          var raw = $("curhatInput").value.trim();
+          if (!raw) {
+            toast("Isi dulu pengakuannya. Nggak ngaku, nggak di-roast. Adil kan?");
+            $("curhatInput").focus();
+            return;
+          }
+          var low = raw.toLowerCase();
+          var matched = null;
+          for (var i = 0; i < CURHAT_RULES.length; i++) {
+            var rule = CURHAT_RULES[i];
+            for (var j = 0; j < rule.keys.length; j++) {
+              if (low.indexOf(rule.keys[j]) !== -1) { matched = rule.roast; break; }
+            }
+            if (matched) break;
+          }
+          if (!matched) {
+            var snippet = raw.length > 60 ? raw.slice(0, 60) + "…" : raw;
+            matched = "Lo barusan ngaku: \"" + snippet + "\" — dan lo nulis itu sendiri, {nama}, tanpa dipaksa siapa-siapa. Mesin bahkan nggak perlu kerja keras, lo udah nge-roast diri sendiri duluan.";
+          }
+          runRoast(matched);
+        });
+
+        updateLevelDesc();
+      })();
+    </script>
+  </body>
+</html>
